@@ -78,6 +78,7 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_NOTIFY:
 	{
 		HWND hIPaddress = GetDlgItem(hwnd, IDC_IPADDRESS);
+		HWND hIPmask = GetDlgItem(hwnd, IDC_IPMASK);
 		HWND hEditPrefix = GetDlgItem(hwnd, IDC_EDIT_PREFIX);
 		switch (wParam)
 		{
@@ -94,6 +95,19 @@ BOOL CALLBACK DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				sprintf(sz_prefix, "%i", dw_prefix);
 				SendMessage(hEditPrefix, WM_SETTEXT, 0, (LPARAM)sz_prefix);
 			}
+		}
+		break;
+		case IDC_IPMASK:
+		{
+			//NMIPADDRESS* pMask = ((NMIPADDRESS*)(lParam));
+			DWORD dw_mask = 0;
+			SendMessage(hIPmask, IPM_GETADDRESS, 0, (LPARAM)&dw_mask);
+			DWORD dw_prefix = 32;
+			for (; dw_mask & 1 ^ 1; dw_mask >>= 1)dw_prefix--;
+			CONST INT SIZE = 5;
+			CHAR sz_prefix[SIZE]{};
+			sprintf(sz_prefix, "%i", dw_prefix);
+			SendMessage(hEditPrefix, WM_SETTEXT, 0, (LPARAM)sz_prefix);
 		}
 		break;
 		}
